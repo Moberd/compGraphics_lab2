@@ -27,8 +27,35 @@ def task1():
 
 
 def task2():
-    # Антон вставь свой код сюда и потом сотри pass
-    pass
+    image = Image.open('pic2.jpg')
+    w, h = image.size
+    red_image = Image.new("RGB", (w, h))
+    green_image = Image.new("RGB", (w, h))
+    blue_image = Image.new("RGB", (w, h))
+
+    for x in range(w):
+        for y in range(h):
+            r, g, b = image.getpixel((x, y))
+            red_image.putpixel((x, y), (r, 0, 0))
+    red_image.show()
+    plt.stairs(red_image.histogram())
+    plt.show()
+
+    for x in range(w):
+        for y in range(h):
+            r, g, b = image.getpixel((x, y))
+            green_image.putpixel((x, y), (0, g, 0))
+    #green_image.show()
+    #plt.stairs(red_image.histogram())
+    #plt.show()
+
+    for x in range(w):
+        for y in range(h):
+            r, g, b = image.getpixel((x, y))
+            blue_image.putpixel((x, y), (0, 0, b))
+    #blue_image.show()
+    #plt.stairs(red_image.histogram())
+    #plt.show()
 
 
 if __name__ == '__main__':
