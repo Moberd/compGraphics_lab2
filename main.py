@@ -58,6 +58,8 @@ def task2():
     #blue_image.show()
     #plt.stairs(red_image.histogram())
     #plt.show()
+
+
 def rgb_to_hsv(r, g, b):
     r, g, b = r/255.0, g/255.0, b/255.0
     mx = max(r, g, b)
