@@ -22,12 +22,13 @@ def task1():
             myImage2.putpixel((x, y), val2)
             diffImage.putpixel((x, y), abs(val - val2))
     myImage1.show()
-    #sleep(5)
+    sleep(3)
     plt.stairs(myImage1.histogram())
     plt.show()
-    #myImage2.show()
-    #sleep(5)
-    #diffImage.show()
+    myImage2.show()
+    sleep(3)
+    plt.stairs(myImage2.histogram())
+    diffImage.show()
 
 
 def task2():
@@ -42,53 +43,58 @@ def task2():
             r, g, b = image.getpixel((x, y))
             red_image.putpixel((x, y), (r, 0, 0))
     red_image.show()
-    plt.stairs(red_image.histogram())
+    plt.stairs(red_image.histogram()[0:256], label="Red Color")
     plt.show()
 
     for x in range(w):
         for y in range(h):
             r, g, b = image.getpixel((x, y))
             green_image.putpixel((x, y), (0, g, 0))
-    #green_image.show()
-    #plt.stairs(red_image.histogram())
-    #plt.show()
+    green_image.show()
+    plt.stairs(red_image.histogram()[512:768])
+    plt.show()
 
     for x in range(w):
         for y in range(h):
             r, g, b = image.getpixel((x, y))
             blue_image.putpixel((x, y), (0, 0, b))
-    #blue_image.show()
-    #plt.stairs(red_image.histogram())
-    #plt.show()
+    blue_image.show()
+    plt.stairs(red_image.histogram()[256:512])
+    plt.show()
 
 
 def rgb_to_hsv(r, g, b):
-    r, g, b = r/255.0, g/255.0, b/255.0
+    r, g, b = r/256.0, g/256.0, b/256.0
     mx = max(r, g, b)
     mn = min(r, g, b)
-    df = mx-mn
+    df = mx - mn
+
     if mx == mn:
         h = 0
-    elif mx == r:
-        h = (60 * ((g-b)/df) + 360) % 360
+    elif mx == r and g >= b:
+        h = (60 * ((g - b) / df) + 0) % 360
+    elif mx == r and g < b:
+        h = (60 * ((g - b) / df) + 360) % 360
     elif mx == g:
-        h = (60 * ((b-r)/df) + 120) % 360
+        h = (60 * ((b - r) / df) + 120) % 360
     elif mx == b:
-        h = (60 * ((r-g)/df) + 240) % 360
+        h = (60 * ((r - g) / df) + 240) % 360
+
     if mx == 0:
         s = 0
     else:
-        s = (df/mx)*100
-    v = mx*100
+        s = (1 - mn/mx) * 100
+    v = mx * 100
     return round(h), round(s), round(v)
-    #return h, s, v
 
-def hsv_to_rgb(h, s, v):
-    i = math.floor(h*6)
-    f = h*6 - i
-    p = v * (1-s)
-    q = v * (1-f*s)
-    t = v * (1-(1-f)*s)
+
+def hsv_to_rgb(hsv_arr):
+    h, s, v = hsv_arr[0], hsv_arr[1] / 100, hsv_arr[2] / 100
+    i = math.floor(h / 60) % 6
+    f = h / 60 - math.floor(h / 60)
+    p = v * (1 - s)
+    q = v * (1 - f * s)
+    t = v * (1 - (1 - f) * s)
 
     r, g, b = [
         (v, t, p),
@@ -99,38 +105,50 @@ def hsv_to_rgb(h, s, v):
         (v, p, q),
     ][int(i % 6)]
 
-    return r, g, b
+    rgb = round(r * 255), round(g * 255), round(b * 255)
+    return rgb
 
 def task3():
-    a = Image.open('pic2.jpg')
-    HSVColor(a).show()
+    img = Image.open('pic2.jpg')
+    HSVColor(img)
 
 
 def HSVColor(img):
-
-    #hsv_img = img.convert('HSV')
     w, hp = img.size
-    hsv_img = Image.new("HSV", (w, hp))
+    hsv_arr = []
     for x in range(w):
         for y in range(hp):
             r, g, b = img.getpixel((x, y))
             h, s, v = rgb_to_hsv(r, g, b)
-            hsv_img.putpixel((x, y), (h, s, v))
+            hsv_arr.append([h, s, v])
 
-    hsv = np.array(hsv_img)
-    h = 0
-    s = 50
-    v = 0
-    #hsv[..., 0] = (hsv[..., 0] / 256 * 360 + h) / 360 * 256 # 0 это HUE 1 - saturation 2 - value
-    #hsv[..., 1] = (hsv[..., 1] / 256 * 100 + s) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
-    #hsv[..., 2] = (hsv[..., 2] / 256 * 100 + v) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
-    new_img = Image.fromarray(hsv, 'HSV')
-    return new_img.convert('RGB')
+    h = int(input("Введите значение H [0;360]: "))
+    s = int(input("Введите значение S [0;100]: "))
+    v = int(input("Введите значение V [0;100]: "))
+    # 0 это HUE 1 - saturation 2 - value
+    for i in range(len(hsv_arr)):
+        hsv_arr[i][0] = ((hsv_arr[i][0] + h) % 360)
+        hsv_arr[i][1] = ((hsv_arr[i][1] + s) % 100)
+        hsv_arr[i][2] = ((hsv_arr[i][2] + v) % 100)
+
+    new_img = Image.new("RGB", (w, hp))
+    cnt = 0
+    for x in range(w):
+        for y in range(hp):
+            new_img.putpixel((x, y), hsv_to_rgb(hsv_arr[cnt]))
+            cnt += 1
+    new_img.show()
+    #new_img = Image.fromarray(hsv, 'HSV')
+    #new_img.convert('RGB').show()
 
 
 if __name__ == '__main__':
-    #task1()
-    #task2()
-    task3()
+    i = int(input("Введите номер задания: "))
+    if i == 1:
+        task1()
+    elif i == 2:
+        task2()
+    elif i == 3:
+        task3()
 
 
