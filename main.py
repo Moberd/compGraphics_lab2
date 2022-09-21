@@ -78,13 +78,8 @@ def rgb_to_hsv(r, g, b):
     else:
         s = (df/mx)*100
     v = mx*100
-    #return round(h), round(s), round(v)
-    return h, s, v
-
-
-
-
-
+    return round(h), round(s), round(v)
+    #return h, s, v
 
 def task3():
     a = Image.open('pic2.jpg')
@@ -92,20 +87,30 @@ def task3():
 
 
 def HSVColor(img):
-    hsv_img = img.convert('HSV')
+
+    #hsv_img = img.convert('HSV')
+    w, hp = img.size
+    hsv_img = Image.new("HSV", (w, hp))
+    for x in range(w):
+        for y in range(hp):
+            r, g, b = img.getpixel((x, y))
+            h, s, v = rgb_to_hsv(r, g, b)
+            hsv_img.putpixel((x, y), (h, s, v))
+
     hsv = np.array(hsv_img)
     h = 0
     s = 50
     v = 0
-    hsv[..., 0] = (hsv[..., 0] / 256 * 360 + h) / 360 * 256 # 0 это HUE 1 - saturation 2 - value
-    hsv[..., 1] = (hsv[..., 1] / 256 * 100 + s) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
-    hsv[..., 2] = (hsv[..., 2] / 256 * 100 + v) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
+    #hsv[..., 0] = (hsv[..., 0] / 256 * 360 + h) / 360 * 256 # 0 это HUE 1 - saturation 2 - value
+    #hsv[..., 1] = (hsv[..., 1] / 256 * 100 + s) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
+    #hsv[..., 2] = (hsv[..., 2] / 256 * 100 + v) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
     new_img = Image.fromarray(hsv, 'HSV')
     return new_img.convert('RGB')
 
 
 if __name__ == '__main__':
-    task1()
-    task2()
+    #task1()
+    #task2()
+    task3()
 
 
