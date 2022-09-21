@@ -113,10 +113,6 @@ def hsv_to_rgb(hsv_arr):
 
 def task3():
     img = Image.open('pic2.jpg')
-    HSVColor(img)
-
-
-def HSVColor(img):
     w, hp = img.size
     hsv_arr = []
     for x in range(w):
@@ -141,8 +137,7 @@ def HSVColor(img):
             new_img.putpixel((x, y), hsv_to_rgb(hsv_arr[cnt]))
             cnt += 1
     new_img.show()
-    #new_img = Image.fromarray(hsv, 'HSV')
-    #new_img.convert('RGB').show()
+
 
 
 if __name__ == '__main__':
