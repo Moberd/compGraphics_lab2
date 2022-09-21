@@ -23,12 +23,15 @@ def task1():
             diffImage.putpixel((x, y), abs(val - val2))
     myImage1.show()
     sleep(3)
-    plt.stairs(myImage1.histogram())
-    plt.show()
     myImage2.show()
     sleep(3)
-    plt.stairs(myImage2.histogram())
     diffImage.show()
+    fig, axs = plt.subplots()
+    axs.stairs(myImage1.histogram(), label='Type 1')
+    axs.stairs(myImage2.histogram(), label='Type 2')
+    axs.set_title("Использование тонов")
+    axs.legend()
+    plt.show()
 
 
 def task2():
@@ -64,7 +67,7 @@ def task2():
 
 
 def rgb_to_hsv(r, g, b):
-    r, g, b = r/256.0, g/256.0, b/256.0
+    r, g, b = r / 255.0, g / 255.0, b / 255.0
     mx = max(r, g, b)
     mn = min(r, g, b)
     df = mx - mn
@@ -72,18 +75,18 @@ def rgb_to_hsv(r, g, b):
     if mx == mn:
         h = 0
     elif mx == r and g >= b:
-        h = (60 * ((g - b) / df) + 0) % 360
+        h = (60 * ((g - b) / df) + 0)
     elif mx == r and g < b:
-        h = (60 * ((g - b) / df) + 360) % 360
+        h = (60 * ((g - b) / df) + 360)
     elif mx == g:
-        h = (60 * ((b - r) / df) + 120) % 360
+        h = (60 * ((b - r) / df) + 120)
     elif mx == b:
-        h = (60 * ((r - g) / df) + 240) % 360
+        h = (60 * ((r - g) / df) + 240)
 
     if mx == 0:
         s = 0
     else:
-        s = (1 - mn/mx) * 100
+        s = (1 - mn / mx) * 100
     v = mx * 100
     return round(h), round(s), round(v)
 
@@ -91,7 +94,7 @@ def rgb_to_hsv(r, g, b):
 def hsv_to_rgb(hsv_arr):
     h, s, v = hsv_arr[0], hsv_arr[1] / 100, hsv_arr[2] / 100
     i = math.floor(h / 60) % 6
-    f = h / 60 - math.floor(h / 60)
+    f = (h / 60) - math.floor(h / 60)
     p = v * (1 - s)
     q = v * (1 - f * s)
     t = v * (1 - (1 - f) * s)
@@ -103,7 +106,7 @@ def hsv_to_rgb(hsv_arr):
         (p, q, v),
         (t, p, v),
         (v, p, q),
-    ][int(i % 6)]
+    ][int(i)]
 
     rgb = round(r * 255), round(g * 255), round(b * 255)
     return rgb
@@ -128,8 +131,8 @@ def HSVColor(img):
     # 0 это HUE 1 - saturation 2 - value
     for i in range(len(hsv_arr)):
         hsv_arr[i][0] = ((hsv_arr[i][0] + h) % 360)
-        hsv_arr[i][1] = ((hsv_arr[i][1] + s) % 100)
-        hsv_arr[i][2] = ((hsv_arr[i][2] + v) % 100)
+        hsv_arr[i][1] = ((hsv_arr[i][1] + s) % 101)
+        hsv_arr[i][2] = ((hsv_arr[i][2] + v) % 101)
 
     new_img = Image.new("RGB", (w, hp))
     cnt = 0
