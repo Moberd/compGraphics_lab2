@@ -1,6 +1,8 @@
-from PIL import Image
+from PIL import Image, ImageColor
 from time import sleep
 from matplotlib import pyplot as plt
+import colorsys
+import numpy as np
 
 
 def task1():
@@ -58,8 +60,28 @@ def task2():
     #plt.show()
 
 
+def task3():
+    a = Image.open('pic2.jpg')
+    HSVColor(a).show()
+
+
+def HSVColor(img):
+    hsv_img = img.convert('HSV')
+    hsv = np.array(hsv_img)
+    h = 0
+    s = 50
+    v = 0
+    hsv[..., 0] = (hsv[..., 0] / 256 * 360 + h) / 360 * 256 # 0 это HUE 1 - saturation 2 - value
+    hsv[..., 1] = (hsv[..., 1] / 256 * 100 + s) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
+    hsv[..., 2] = (hsv[..., 2] / 256 * 100 + v) / 100 * 256 # 0 это HUE 1 - saturation 2 - value
+    new_img = Image.fromarray(hsv, 'HSV')
+    return new_img.convert('RGB')
+
+
 if __name__ == '__main__':
-    task1()
-    task2()
+    #task1()
+    #task2()
+    task3()
+
 
 
