@@ -1,3 +1,5 @@
+import math
+
 from PIL import Image
 from time import sleep
 from matplotlib import pyplot as plt
@@ -80,6 +82,24 @@ def rgb_to_hsv(r, g, b):
     v = mx*100
     return round(h), round(s), round(v)
     #return h, s, v
+
+def hsv_to_rgb(h, s, v):
+    i = math.floor(h*6)
+    f = h*6 - i
+    p = v * (1-s)
+    q = v * (1-f*s)
+    t = v * (1-(1-f)*s)
+
+    r, g, b = [
+        (v, t, p),
+        (q, v, p),
+        (p, v, t),
+        (p, q, v),
+        (t, p, v),
+        (v, p, q),
+    ][int(i % 6)]
+
+    return r, g, b
 
 def task3():
     a = Image.open('pic2.jpg')
