@@ -54,7 +54,7 @@ def task2():
             r, g, b = image.getpixel((x, y))
             green_image.putpixel((x, y), (0, g, 0))
     green_image.show()
-    plt.stairs(red_image.histogram()[512:768])
+    plt.stairs(green_image.histogram()[256:512], label="Green Color")
     plt.show()
 
     for x in range(w):
@@ -62,7 +62,7 @@ def task2():
             r, g, b = image.getpixel((x, y))
             blue_image.putpixel((x, y), (0, 0, b))
     blue_image.show()
-    plt.stairs(red_image.histogram()[256:512])
+    plt.stairs(blue_image.histogram()[512:768], label="Blue Color")
     plt.show()
 
 
